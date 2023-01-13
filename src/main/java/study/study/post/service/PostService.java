@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import study.study.answer.dto.AnswerResponseDto;
+import study.study.answer.entity.Answer;
 import study.study.exception.BusinessLogicException;
 import study.study.exception.ExceptionCode;
 import study.study.exception.PostNotFound;
@@ -16,8 +17,7 @@ import study.study.post.dto.PostResponseDto;
 import study.study.post.entity.Post;
 import study.study.post.repository.PostRepository;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -59,6 +59,28 @@ public class PostService {
         List<AnswerResponseDto> answerResponseDto = postRepository.answerList(postId);
 
         return PostAnswerDto.toPostAnswerDto(findPost,answerResponseDto);
+    }
+
+    public PostAnswerDto findPostAnswer(long postId) {
+        Post findPost = findVerifiedPost(postId);
+        List<Answer> answers = postRepository.answerParentList(postId);
+
+        List<AnswerResponseDto> answerResponseDtoList = new ArrayList<>();
+        Map<Long,AnswerResponseDto> map = new HashMap<>();
+
+        answers.stream().forEach(answer -> {
+            AnswerResponseDto answerResponseDto = new AnswerResponseDto(answer);
+            if (answer.getParent() != null){
+                answerResponseDto.setParentId(answer.getParent().getAnswerId());
+            }
+            map.put(answerResponseDto.getAnswerId(),answerResponseDto);
+            if (answerResponseDto.getParentId() != null){
+                map.get(answer.getParent().getAnswerId()).getChildren().add(answer);
+            }
+            else answerResponseDtoList.add(answerResponseDto);
+        });
+
+        return PostAnswerDto.toPostAnswerDto(findPost,answerResponseDtoList);
     }
 
     // 삭제

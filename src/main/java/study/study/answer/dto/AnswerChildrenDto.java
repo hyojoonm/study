@@ -5,8 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class AnswerPostDto {
-
+public class AnswerChildrenDto {
     private String content;
 
     private String writer;

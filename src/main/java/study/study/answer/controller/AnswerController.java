@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import study.study.answer.dto.AnswerChildrenDto;
 import study.study.answer.dto.AnswerPatchDto;
 import study.study.answer.dto.AnswerPostDto;
 import study.study.answer.dto.AnswerResponseDto;
@@ -29,6 +30,14 @@ public class AnswerController {
         Answer answer = answerService.create(answerPostDto, postId);
 
         return new ResponseEntity<>(new SingleResponseDto<>(AnswerResponseDto.responseCreate(answer)), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{postId}/{answerId}")
+    public ResponseEntity createParent(@RequestBody AnswerChildrenDto answerChildrenDto, @PathVariable Long postId,
+                                       @PathVariable Long answerId){
+        Answer answer = answerService.createChildren(answerChildrenDto, postId, answerId);
+
+        return new ResponseEntity<>(new SingleResponseDto<>(AnswerResponseDto.responseParentCreate(answer)), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{answerId}")

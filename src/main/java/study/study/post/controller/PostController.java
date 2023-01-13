@@ -49,7 +49,7 @@ public class PostController {
 
     @GetMapping("/post/{postId}")
     public ResponseEntity getPost(@PathVariable Long postId){
-        PostAnswerDto post = postService.findPost(postId);
+        PostAnswerDto post = postService.findPostAnswer(postId);
 
         return new ResponseEntity<>(new SingleResponseDto<>(post),HttpStatus.OK);
     }

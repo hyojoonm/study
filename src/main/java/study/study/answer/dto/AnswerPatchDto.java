@@ -8,4 +8,6 @@ import lombok.NoArgsConstructor;
 public class AnswerPatchDto {
 
     private String content;
+
+    private Long parentId;
 }

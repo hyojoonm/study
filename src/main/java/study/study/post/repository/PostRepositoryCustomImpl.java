@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import study.study.answer.dto.AnswerResponseDto;
+import study.study.answer.entity.Answer;
 import study.study.answer.entity.QAnswer;
 
 import javax.persistence.EntityManager;
@@ -24,10 +25,23 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         return queryFactory
                 .select(Projections.fields(AnswerResponseDto.class,
                         answer.answerId,
-                        answer.content
+                        answer.content,
+                        answer.writer,
+                        answer.parent.answerId
                 ))
                 .from(answer)
                 .where(answer.post.postId.eq(postId))
+                .orderBy(answer.parent.answerId.asc().nullsFirst(),answer.answerId.asc())
+                .fetch();
+    }
+
+    public List<Answer> answerParentList(Long postId){
+        return queryFactory.select(answer)
+                .from(answer)
+                .leftJoin(answer.parent)
+                .fetchJoin()
+                .where(answer.post.postId.eq(postId))
+                .orderBy(answer.parent.answerId.asc().nullsFirst())
                 .fetch();
     }
 

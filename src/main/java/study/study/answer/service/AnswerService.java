@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import study.study.answer.dto.AnswerChildrenDto;
 import study.study.answer.dto.AnswerPatchDto;
 import study.study.answer.dto.AnswerPostDto;
 import study.study.answer.entity.Answer;
@@ -27,6 +28,15 @@ public class AnswerService {
     public Answer create(AnswerPostDto answerPostDto, Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(PostNotFound::new);
         Answer answer = Answer.toEntity(answerPostDto, post);
+
+        return answerRepository.save(answer);
+    }
+
+    public Answer createChildren(AnswerChildrenDto answerChildrenDto,Long postId , Long answerId){
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFound::new);
+        Answer findAnswer = answerRepository.findById(answerId).orElseThrow(AnswerNotFound::new);
+        Answer answer = Answer.toParentEntity(answerChildrenDto, post, findAnswer);
+
         return answerRepository.save(answer);
     }
 

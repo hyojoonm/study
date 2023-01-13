@@ -24,9 +24,15 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public final NumberPath<Long> answerId = createNumber("answerId", Long.class);
 
+    public final ListPath<Answer, QAnswer> children = this.<Answer, QAnswer>createList("children", Answer.class, QAnswer.class, PathInits.DIRECT2);
+
     public final StringPath content = createString("content");
 
+    public final QAnswer parent;
+
     public final study.study.post.entity.QPost post;
+
+    public final StringPath writer = createString("writer");
 
     public QAnswer(String variable) {
         this(Answer.class, forVariable(variable), INITS);
@@ -46,6 +52,7 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public QAnswer(Class<? extends Answer> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.parent = inits.isInitialized("parent") ? new QAnswer(forProperty("parent"), inits.get("parent")) : null;
         this.post = inits.isInitialized("post") ? new study.study.post.entity.QPost(forProperty("post")) : null;
     }
 
