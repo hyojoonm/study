@@ -41,6 +41,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 .leftJoin(answer.parent)
                 .fetchJoin()
                 .where(answer.post.postId.eq(postId))
+
                 .orderBy(answer.parent.answerId.asc().nullsFirst())
                 .fetch();
     }
